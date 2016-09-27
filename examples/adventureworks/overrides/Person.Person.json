@@ -1,0 +1,33 @@
+{
+    "fields": {
+        "BusinessEntityID": {
+            "value": {
+                "customFaker": "foreignKey.create"
+            }
+        },
+        "EmailPromotion": {
+            "value": {
+                "pickOne": [0, 1, 2]
+            }
+        },
+        "ssn": {
+            "type": "varchar",
+            "maxLength": 9,
+            "enable": true,
+            "isEncrypted": true,
+            "value": {
+                    "fakerFunction": "String(faker.random.number({'min': 100000000, 'max': 999999999}))"
+            }
+        },
+        "PersonType": {
+            "value": {
+                "pickOne": ["SC", "VC", "IN", "EM", "SP"]
+            }
+        }
+    },
+    "LastName": {
+        "value": {
+            "fakerFunction": "f.name.lastName()"
+        }
+    }
+}

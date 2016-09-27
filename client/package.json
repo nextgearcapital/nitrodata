@@ -1,0 +1,38 @@
+{
+  "name": "nitrodata_client",
+  "version": "0.6.0",
+  "description": "client for NITRO api",
+  "main": "client.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha",
+    "postinstall": "node init.js",
+    "bamboo": "node node_modules/mocha/bin/mocha -R mocha-bamboo-reporter",
+    "integration:setup": "node init.js",
+    "integration:test:mssql": "node ./node_modules/mocha/bin/mocha ./test/integration/mssql",
+    "integration:bamboo:mssql": "sleep 15; node init.js; node ./node_modules/mocha/bin/mocha -R mocha-bamboo-reporter ./test/integration/mssql",
+    "integration:test:alps": "node ./node_modules/mocha/bin/mocha ./test/integration/alps",
+    "integration:bamboo:alps": "sleep 15; node init.js; node ./node_modules/mocha/bin/mocha -R mocha-bamboo-reporter ./test/integration/alps"
+  },
+  "author": "NextGear Capital",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "bluebird": "^3.1.1",
+    "fstream": "^1.0.8",
+    "lodash": "^3.10.1",
+    "requestretry": "^1.5.0",
+    "swig": "^1.4.2",
+    "url-join": "0.0.1",
+    "uuid4": "^1.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-mocha": "^2.1.3",
+    "gulp-nodemon": "^2.0.3",
+    "gulp-util": "^3.0.6",
+    "mocha": "^2.2.5",
+    "mocha-bamboo-reporter": "^1.1.0",
+    "sinon": "^1.16.1"
+  }
+}

@@ -1,0 +1,15 @@
+{
+    "fields": {
+        "SellEndDate": {
+            "value": {
+                "fakerFunction": "faker.date.future()"
+            }
+        },
+        "SizeUnitMeasureCode": {
+            "prettyTargetTable": "sizeUnitMeasureCodeModel"
+        },
+        "WeightUnitMeasureCode": {
+            "prettyTargetTable": "weightUnitMeasureCodeModel"
+        }
+    }
+}

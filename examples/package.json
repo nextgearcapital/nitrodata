@@ -1,0 +1,24 @@
+{
+  "name": "examples",
+  "version": "0.1.0",
+  "description": "example usage of nitro",
+  "main": "none",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "NextGear Capital",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "moment": "^2.14.1",
+    "nitro-client": "file:../client",
+    "node-uuid": "^1.4.7"
+  }
+}

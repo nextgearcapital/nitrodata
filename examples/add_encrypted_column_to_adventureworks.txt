@@ -1,0 +1,34 @@
+Run commands below to create a key, certificate and add a encrypted column, ssn, to Person.Person
+Note:  This isn't needed to run any of the example code.
+
+
+-- setup
+CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Letmein';
+OPEN MASTER KEY DECRYPTION BY PASSWORD = 'Letmein';
+
+CREATE CERTIFICATE MyCertificate
+   WITH SUBJECT = 'This is a test',
+EXPIRY_DATE = '12/31/2020' ;
+
+CREATE SYMMETRIC KEY MyKey
+WITH ALGORITHM = AES_256,
+KEY_SOURCE = 'The quick brown fox jumped over the lazy sleeping dog',
+IDENTITY_VALUE = 'Blue Sky'
+ENCRYPTION BY CERTIFICATE MyCertificate;
+
+ALTER TABLE Person.Person 
+ADD ssn VARBINARY(256) NULL
+
+-- usage
+OPEN SYMMETRIC KEY MyKey DECRYPTION BY CERTIFICATE MyCertificate;
+DECLARE @ssn char(9);
+DECLARE @unencryptedSsn char(9);
+DECLARE @encryptedSsn varchar(300);
+SET @ssn = '987654321';
+SET @encryptedSsn = encryptbykey(key_guid('MyKey'), @ssn)
+PRINT @ssn
+PRINT @encryptedSsn
+
+SET @unencryptedSsn = DECRYPTBYKEYAUTOCERT(cert_ID('MyCertificate'), NULL, @encryptedSsn)
+  PRINT 'unencrypted ssn'
+  PRINT @unencryptedSsn;
