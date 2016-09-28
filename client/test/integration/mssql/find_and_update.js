@@ -14,7 +14,7 @@ describe('find and update', function() {
         before(function (done) {
             var addressModel = m.Person.Address()
                 .withAddressLine1('123 Evergreen Terrace')
-                .withCity('Springfield')
+                .withCity('Springfield');
 
             nitro.createAsync(addressModel)
                 .then(function (results) {

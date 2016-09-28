@@ -5,7 +5,7 @@ var should = require('chai').should(); // jshint ignore:line
 describe.skip('SQL Builder', function () {
     //var SqlBuilder = require('../lib/sql_builder');
     //var models = require('../lib/models');
-    
+
     describe('createParameterizedInsert', function () {
         it('should create a parameterized sql statement for model', function () {
             var instance = {
@@ -27,7 +27,7 @@ describe.skip('SQL Builder', function () {
                             type: "varchar",
                             isNullable: false,
                             isIdentity: false,
-                            isPrimaryKey: true,
+                            isPrimaryKey: true
                         }
                     }
                 }
@@ -46,7 +46,7 @@ describe.skip('SQL Builder', function () {
     });
     describe('updateRow', function () {
         it('should create a sql statement updating a row for a table', function () {
-             models.clobberModels({
+            models.clobberModels({
                 user: {
                     fields: {
                         'last_name': {
@@ -57,25 +57,25 @@ describe.skip('SQL Builder', function () {
                             type: "varchar",
                             isNullable: false,
                             isIdentity: false,
-                            isPrimaryKey: true,
-                        }, 
+                            isPrimaryKey: true
+                        },
                         'first_name': {
                             value: {
                                 default: "bob"
                             },
                             maxLength: 10,
                             type: "varchar",
-                            isNullable: false,
+                            isNullable: false
                         }
                     }
                 }
             });
 
             var modelName = 'user',
-                instance = { 'first_name': 'SqlBuilder\'\'s Detail' },
+                instance = {'first_name': 'SqlBuilder\'\'s Detail'},
                 where = "last_name = 'tables'";
 
-            var correctSql = "CREATE TABLE #T ( last_name varchar(10) ); UPDATE user SET first_name = 'SqlBuilder''s Detail' OUTPUT INSERTED.last_name INTO #T  WHERE last_name = 'tables'; SELECT upd.* FROM user upd INNER JOIN #T ON upd.last_name = #T.last_name; DROP TABLE #T"; 
+            var correctSql = "CREATE TABLE #T ( last_name varchar(10) ); UPDATE user SET first_name = 'SqlBuilder''s Detail' OUTPUT INSERTED.last_name INTO #T  WHERE last_name = 'tables'; SELECT upd.* FROM user upd INNER JOIN #T ON upd.last_name = #T.last_name; DROP TABLE #T";
             SqlBuilder.updateRow(models, modelName, instance, where).should.equal(correctSql);
         });
     });

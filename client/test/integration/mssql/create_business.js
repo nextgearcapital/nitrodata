@@ -7,7 +7,7 @@ var uuid4 = require('uuid4');
 //require('../lib/logging').config({'level': 'debug'});
 
 
-describe('create' , function() {
+describe('create', function () {
     describe('BusinessEntity (with nested Address and AddressType)', function () {
         before(function () {
         });
@@ -34,23 +34,23 @@ describe('create' , function() {
                 .createNew();
 
 
-			nitro.create(businessEntityAddress, function (err, results) {
-				if (err) {
-					done(err);
-				} else {
+            nitro.create(businessEntityAddress, function (err, results) {
+                if (err) {
+                    done(err);
+                } else {
                     results.AddressType[0].name.should.equal('Primary');
                     results.Address[0].addressLine1.should.equal('742 Evergreen Terrace');
                     results.Address[0].city.should.equal('Springfield');
 
                     var businessEntityId = results.BusinessEntity[0].businessEntityId;
                     var addressId = results.Address[0].addressId;
-                    results.BusinessEntityAddress[0].businessEntityId.should.equal(businessEntityId)
-                    results.BusinessEntityAddress[0].addressId.should.equal(addressId)
+                    results.BusinessEntityAddress[0].businessEntityId.should.equal(businessEntityId);
+                    results.BusinessEntityAddress[0].addressId.should.equal(addressId);
 
                     done();
-				}
-			});
-		});
-	});
+                }
+            });
+        });
+    });
 });
 

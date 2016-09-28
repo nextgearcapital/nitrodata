@@ -11,17 +11,25 @@ describe('API (encrypted fields)', function () {
     var mocker = require('./misc/mockDb');
     var execQueryResult = [{"notTested": "notNeededForTest"}];
     var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-    
-    beforeEach( mocker.beforeMock(execQueryResult, execParameterizedQueryResult) );
-    afterEach( mocker.afterMock );
+
+    beforeEach(mocker.beforeMock(execQueryResult, execParameterizedQueryResult));
+    afterEach(mocker.afterMock);
 
     describe('/createRecords', function () {
         it('should respond to a POST by calling db.execParameterizedQuery', function (done) {
             var execQueryResult = [];
-            var execParameterizedQueryResult = {"userWithSsn":[{"firstName":"Lil Bobby","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]};
-            
+            var execParameterizedQueryResult = {
+                "userWithSsn": [{
+                    "firstName": "Lil Bobby",
+                    "lastName": "Tables",
+                    "phone": "6954704540",
+                    "company": "AcmeCorporation",
+                    "type": "employee"
+                }]
+            };
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
-            
+
             var postData = {
                 'model': 'user_with_ssn',
                 'attributes': {
@@ -30,7 +38,7 @@ describe('API (encrypted fields)', function () {
                     'phone': '6954704540',
                     'company': 'AcmeCorporation',
                     'type': 'employee',
-                    'ssn': '999449999',
+                    'ssn': '999449999'
                 }
             };
 
@@ -61,28 +69,34 @@ describe('API (encrypted fields)', function () {
                 });
         });
     });
-    
-    describe("/findRecords", function (){
+
+    describe("/findRecords", function () {
         it('should respond to a GET by calling db.execQuery', function (done) {
-            var execQueryResult = [{"first_name": "Sir Robert", "last_name": "Tables", "phone": "6954704540", "company": "AcmeCorporation", "type": "employee"}];
+            var execQueryResult = [{
+                "first_name": "Sir Robert",
+                "last_name": "Tables",
+                "phone": "6954704540",
+                "company": "AcmeCorporation",
+                "type": "employee"
+            }];
             var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-                
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
-            
+
             var postData = {
                 'model': 'user_with_ssn',
                 'attributes': {
                     'last_name': 'Tables',
-                    'ssn': '999449999',
+                    'ssn': '999449999'
                 },
-                'count': 1,
+                'count': 1
             };
 
             var expectedResponse = '{"userWithSsn":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
             var expectedFindSql = "SELECT TOP 1 *, decrypted_ssn = CONVERT(varchar(50), " +
                 "DECRYPTBYKEYAUTOCERT(cert_ID('DSCCertificate'), NULL, ssn)) FROM user_with_ssn  " +
                 "WHERE last_name = 'Tables' ORDER BY NEWID()";
-            
+
             request(app)
                 .get("/findRecords")
                 .send(postData)
@@ -100,21 +114,27 @@ describe('API (encrypted fields)', function () {
         });
     });
 
-    describe("/updateRecords", function (){
+    describe("/updateRecords", function () {
         it('should respond to a POST by calling db.execQuery', function (done) {
-            var execQueryResult = [{"first_name": "Sir Robert", "last_name": "Tables", "phone": "6954704540", "company": "AcmeCorporation", "type": "employee"}];
+            var execQueryResult = [{
+                "first_name": "Sir Robert",
+                "last_name": "Tables",
+                "phone": "6954704540",
+                "company": "AcmeCorporation",
+                "type": "employee"
+            }];
             var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-            
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
 
             var postData = {
                 'model': 'user_with_ssn',
                 'attributes': {
                     'first_name': 'Sir Robert',
-                    'ssn': '999559999',
+                    'ssn': '999559999'
                 },
                 'where': 'last_name = \'Tables\'',
-                "count": 1,
+                "count": 1
             };
 
             var expectedResponse = '{"userWithSsn":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
@@ -124,7 +144,7 @@ describe('API (encrypted fields)', function () {
                 "OUTPUT INSERTED.first_name INTO #T  WHERE last_name = 'Tables'; " +
                 "SELECT upd.*, decrypted_ssn = CONVERT(varchar(50), DECRYPTBYKEYAUTOCERT(cert_ID('DSCCertificate'), NULL, upd.ssn)) " +
                 "FROM user_with_ssn upd INNER JOIN #T ON upd.first_name = #T.first_name; DROP TABLE #T";
-            
+
             request(app)
                 .post("/updateRecords")
                 .send(postData)
@@ -142,26 +162,26 @@ describe('API (encrypted fields)', function () {
         });
     });
 
-    describe("/deleteRecords", function (){
+    describe("/deleteRecords", function () {
 
         it('should respond to a POST by calling db.execQuery', function (done) {
             // logger.debug("starting /deleteRecords");
-            
-            
+
+
             var app = mocker.getAppWithMockDb();
-            
+
             var postData = {
                 'model': 'user_with_ssn',
                 'attributes': {
                     'first_name': 'Sir Robert',
-                    'ssn': '999449999',
+                    'ssn': '999449999'
                 },
-                "count": 1,
+                "count": 1
             };
 
             var expectedResponse = '"record: deleted"';
             var expectedDeleteSql = "DELETE user_with_ssn  WHERE first_name = 'Sir Robert'";
-            
+
             request(app)
                 .post("/deleteRecords")
                 .send(postData)

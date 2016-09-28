@@ -11,17 +11,25 @@ describe('API', function () {
     var mocker = require('./misc/mockDb');
     var execQueryResult = [{"notTested": "notNeededForTest"}];
     var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-    
-    beforeEach( mocker.beforeMock(execQueryResult, execParameterizedQueryResult) );
-    afterEach( mocker.afterMock );
+
+    beforeEach(mocker.beforeMock(execQueryResult, execParameterizedQueryResult));
+    afterEach(mocker.afterMock);
 
     describe('/createRecords', function () {
         it('should respond to a POST by calling db.execParameterizedQuery', function (done) {
             var execQueryResult = [];
-            var execParameterizedQueryResult = {"user":[{"firstName":"Lil Bobby","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]};
-            
+            var execParameterizedQueryResult = {
+                "user": [{
+                    "firstName": "Lil Bobby",
+                    "lastName": "Tables",
+                    "phone": "6954704540",
+                    "company": "AcmeCorporation",
+                    "type": "employee"
+                }]
+            };
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
-            
+
             var postData = {
                 'model': 'user',
                 'attributes': {
@@ -58,25 +66,31 @@ describe('API', function () {
                 });
         });
     });
-    
-    describe("/findRecords", function (){
+
+    describe("/findRecords", function () {
         it('should respond to a GET by calling db.execQuery', function (done) {
-            var execQueryResult = [{"first_name": "Sir Robert", "last_name": "Tables", "phone": "6954704540", "company": "AcmeCorporation", "type": "employee"}];
+            var execQueryResult = [{
+                "first_name": "Sir Robert",
+                "last_name": "Tables",
+                "phone": "6954704540",
+                "company": "AcmeCorporation",
+                "type": "employee"
+            }];
             var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-                
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
-            
+
             var postData = {
                 'model': 'user',
                 'attributes': {
-                    'last_name': 'Tables',
+                    'last_name': 'Tables'
                 },
-                'count': 1,
+                'count': 1
             };
 
             var expectedResponse = '{"user":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
             var expectedFindSql = "SELECT TOP 1 * FROM user  WHERE last_name = 'Tables' ORDER BY NEWID()";
-            
+
             request(app)
                 .get("/findRecords")
                 .send(postData)
@@ -94,25 +108,31 @@ describe('API', function () {
         });
     });
 
-    describe("/updateRecords", function (){
+    describe("/updateRecords", function () {
         it('should respond to a POST by calling db.execQuery', function (done) {
-            var execQueryResult = [{"first_name": "Sir Robert", "last_name": "Tables", "phone": "6954704540", "company": "AcmeCorporation", "type": "employee"}];
+            var execQueryResult = [{
+                "first_name": "Sir Robert",
+                "last_name": "Tables",
+                "phone": "6954704540",
+                "company": "AcmeCorporation",
+                "type": "employee"
+            }];
             var execParameterizedQueryResult = [{"notTested": "notNeededForTest"}];
-            
+
             var app = mocker.getAppWithMockDb(execQueryResult, execParameterizedQueryResult);
 
             var postData = {
                 'model': 'user',
                 'attributes': {
-                    'first_name': 'Sir Robert',
+                    'first_name': 'Sir Robert'
                 },
                 'where': 'last_name = \'Tables\'',
-                "count": 1,
+                "count": 1
             };
 
             var expectedResponse = '{"user":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
             var expectedUpdateSql = "CREATE TABLE #T ( first_name varchar(255) ); UPDATE user SET first_name = 'Sir Robert' OUTPUT INSERTED.first_name INTO #T  WHERE last_name = 'Tables'; SELECT upd.* FROM user upd INNER JOIN #T ON upd.first_name = #T.first_name; DROP TABLE #T";
-            
+
             request(app)
                 .post("/updateRecords")
                 .send(postData)
@@ -130,25 +150,25 @@ describe('API', function () {
         });
     });
 
-    describe("/deleteRecords", function (){
+    describe("/deleteRecords", function () {
 
         it('should respond to a POST by calling db.execQuery', function (done) {
             // logger.debug("starting /deleteRecords");
-            
-            
+
+
             var app = mocker.getAppWithMockDb();
-            
+
             var postData = {
                 'model': 'user',
                 'attributes': {
-                    'first_name': 'Sir Robert',
+                    'first_name': 'Sir Robert'
                 },
-                "count": 1,
+                "count": 1
             };
 
             var expectedResponse = '"record: deleted"';
             var expectedDeleteSql = "DELETE user  WHERE first_name = 'Sir Robert'";
-            
+
             request(app)
                 .post("/deleteRecords")
                 .send(postData)
