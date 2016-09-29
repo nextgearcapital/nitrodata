@@ -36,10 +36,10 @@ describe('API (encrypted fields)', function () {
 
             // note - mocking breaks the query that retrieves the response value
             var expectedResponse = '{"userWithSsn":[]}';
-            var expectedInsert = 'CREATE TABLE #T ( first_name varchar(255) );  OPEN SYMMETRIC KEY DSCKey DECRYPTION BY CERTIFICATE DSCCertificate; ' +
+            var expectedInsert = 'CREATE TABLE #T ( first_name varchar(255) );  OPEN SYMMETRIC KEY MyKey DECRYPTION BY CERTIFICATE MyCertificate; ' +
                 'INSERT INTO [user_with_ssn] ("first_name", "last_name", "phone", "company", "type", "ssn") OUTPUT INSERTED.first_name INTO #T ' +
-                'VALUES (@first_name, @last_name, @phone, @company, @type, EncryptByKey(Key_GUID(\'DSCKey\'), CONVERT(VARBINARY(300), @ssn))); ' +
-                'SELECT *, decrypted_ssn = CONVERT(varchar(50), DECRYPTBYKEYAUTOCERT(cert_ID(\'DSCCertificate\'), NULL, ssn)) ' +
+                'VALUES (@first_name, @last_name, @phone, @company, @type, EncryptByKey(Key_GUID(\'MyKey\'), CONVERT(VARBINARY(300), @ssn))); ' +
+                'SELECT *, decrypted_ssn = CONVERT(varchar(50), DECRYPTBYKEYAUTOCERT(cert_ID(\'MyCertificate\'), NULL, ssn)) ' +
                 'FROM [user_with_ssn] WHERE first_name = (SELECT first_name FROM #T); DROP TABLE #T';
 
             request(app)
@@ -80,7 +80,7 @@ describe('API (encrypted fields)', function () {
 
             var expectedResponse = '{"userWithSsn":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
             var expectedFindSql = "SELECT TOP 1 *, decrypted_ssn = CONVERT(varchar(50), " +
-                "DECRYPTBYKEYAUTOCERT(cert_ID('DSCCertificate'), NULL, ssn)) FROM user_with_ssn  " +
+                "DECRYPTBYKEYAUTOCERT(cert_ID('MyCertificate'), NULL, ssn)) FROM user_with_ssn  " +
                 "WHERE last_name = 'Tables' ORDER BY NEWID()";
             
             request(app)
@@ -119,10 +119,10 @@ describe('API (encrypted fields)', function () {
 
             var expectedResponse = '{"userWithSsn":[{"firstName":"Sir Robert","lastName":"Tables","phone":"6954704540","company":"AcmeCorporation","type":"employee"}]}';
             var expectedUpdateSql = "CREATE TABLE #T ( first_name varchar(255) );  " +
-                "OPEN SYMMETRIC KEY DSCKey DECRYPTION BY CERTIFICATE DSCCertificate; " +
-                "UPDATE user_with_ssn SET first_name = 'Sir Robert', ssn = EncryptByKey(Key_GUID('DSCKey'), CONVERT(VARBINARY(300), '999559999')) " +
+                "OPEN SYMMETRIC KEY MyKey DECRYPTION BY CERTIFICATE MyCertificate; " +
+                "UPDATE user_with_ssn SET first_name = 'Sir Robert', ssn = EncryptByKey(Key_GUID('MyKey'), CONVERT(VARBINARY(300), '999559999')) " +
                 "OUTPUT INSERTED.first_name INTO #T  WHERE last_name = 'Tables'; " +
-                "SELECT upd.*, decrypted_ssn = CONVERT(varchar(50), DECRYPTBYKEYAUTOCERT(cert_ID('DSCCertificate'), NULL, upd.ssn)) " +
+                "SELECT upd.*, decrypted_ssn = CONVERT(varchar(50), DECRYPTBYKEYAUTOCERT(cert_ID('MyCertificate'), NULL, upd.ssn)) " +
                 "FROM user_with_ssn upd INNER JOIN #T ON upd.first_name = #T.first_name; DROP TABLE #T";
             
             request(app)
