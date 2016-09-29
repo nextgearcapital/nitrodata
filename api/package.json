@@ -7,7 +7,7 @@
     "nitro": "./app.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node node_modules/mocha/bin/mocha -R spec",
     "bamboo": "node node_modules/mocha/bin/mocha -R mocha-bamboo-reporter",
     "integration:test": "(cd ../client; npm run-script integration:setup; npm run-script integration:test) 2> /dev/null",
     "update": "git pull && rm -rf node_modules && npm install"

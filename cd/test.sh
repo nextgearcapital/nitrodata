@@ -17,12 +17,14 @@ pushd "${parentdir}/mssql_adaptor" >/dev/null 2>&1
 npm install
 popd >/dev/null 2>&1
 
+#install client deps
+pushd "${parentdir}/client" >/dev/null 2>&1
+npm install --ignore-scripts
+popd >/dev/null 2>&1
+
 
 #install api dependencies
 pushd "${parentdir}/api" >/dev/null 2>&1
-npm install
-popd >/dev/null 2>&1
-
-pushd "${parentdir}/client" >/dev/null 2>&1
-npm install --ignore-scripts
+npm install --
+npm test
 popd >/dev/null 2>&1
