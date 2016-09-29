@@ -20,6 +20,13 @@ module.exports = function () {
         execParameterizedQuery.callsArgWith(2, null, execParameterizedQueryResult);
         mockDb.execParameterizedQuery = execParameterizedQuery;
 
+        mockDb.getConfig = function() {
+            return { options: {
+                encryption_key: "MyKey",
+                encryption_cert: "MyCertificate" }
+            }
+        };
+
         return mockDb;
     }
 
